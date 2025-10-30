@@ -1,10 +1,17 @@
-# dgx-tunnel-setup
+# DGX Tunnel Setup & NVIDIA AI Workbench Toolkit
 
-Systemd + SSH tunnel setup script for NVIDIA DGX Spark + Jupyter access
+Systemd + SSH tunnel setup script for NVIDIA DGX Spark + Jupyter access, plus complete AI Workbench management toolkit for Omarchy 3.1.1
 
 ## Overview
 
-This script automates the setup of persistent SSH tunnels to NVIDIA DGX systems using systemd services. It supports both system-wide and user-mode installations with comprehensive validation and error handling.
+This repository contains two main components:
+
+1. **DGX Tunnel Setup** - Automated SSH tunnel management for DGX systems
+2. **AI Workbench Toolkit** - Complete installer and control utility for NVIDIA AI Workbench on Omarchy 3.1.1
+
+### DGX Tunnel Setup
+
+Automates the setup of persistent SSH tunnels to NVIDIA DGX systems using systemd services. It supports both system-wide and user-mode installations with comprehensive validation and error handling.
 
 ## Features
 
@@ -195,6 +202,155 @@ sudo firewall-cmd --reload
 - [validate.sh](scripts/validate.sh) - Validation test suite
 - [test-setup.sh](scripts/test-setup.sh) - Comprehensive test script
 
+---
+
+# NVIDIA AI Workbench Setup Toolkit for Omarchy 3.1.1
+
+A complete installer, uninstaller, and control utility (`aiwctl`) to manage **NVIDIA AI Workbench** on **Omarchy 3.1.1** (Arch-based Linux).
+Optimized for **DGX Spark**, **A40**, and other NVIDIA GPUs.
+
+## AI Workbench Overview
+
+This toolkit makes it simple to:
+- Install all dependencies (drivers, CUDA, Docker, NVIDIA Container Toolkit)
+- Download and set up NVIDIA AI Workbench AppImage
+- Verify GPU & Docker integration
+- Uninstall or update cleanly
+- Control everything via a single CLI tool: `aiwctl`
+
+## Installation
+
+### Quick Install (Recommended)
+
+Interactive installer for both tools:
+
+```bash
+git clone https://github.com/<your-username>/dgx-tunnel-setup.git
+cd dgx-tunnel-setup
+./install.sh
+```
+
+The installer will prompt you to choose:
+1. Install `aiwctl` only (requires sudo)
+2. Install DGX tunnel script only (user install)
+3. Install both (recommended)
+4. Just make scripts executable
+
+### Manual Installation
+
+#### Install aiwctl
+
+```bash
+cd dgx-tunnel-setup
+sudo install -m 755 aiwctl /usr/local/bin/aiwctl
+aiwctl help
+```
+
+#### Install DGX Tunnel Script
+
+```bash
+cd dgx-tunnel-setup
+mkdir -p ~/.local/bin
+cp scripts/setup-dgx-tunnel.sh ~/.local/bin/
+setup-dgx-tunnel.sh --help
+```
+
+## aiwctl Usage
+
+| Command            | Description                                     |
+| ------------------ | ----------------------------------------------- |
+| `aiwctl install`   | Installs NVIDIA AI Workbench with CUDA + Docker |
+| `aiwctl test-gpu`  | Verifies GPU and Docker runtime integration     |
+| `aiwctl update`    | Updates AI Workbench to latest AppImage         |
+| `aiwctl uninstall` | Removes Workbench, Docker, and optionally CUDA  |
+| `aiwctl help`      | Displays help and usage info                    |
+
+## AI Workbench Example Workflow
+
+```bash
+# 1. Install everything
+aiwctl install
+
+# 2. Test GPU visibility
+aiwctl test-gpu
+
+# 3. Launch Workbench
+ai-workbench
+
+# 4. (Optional) Update later
+aiwctl update
+```
+
+## Example AI Workbench Projects
+
+Clone official NVIDIA examples directly inside Workbench:
+
+```bash
+ai-workbench clone https://github.com/NVIDIA/workbench-example-llama3-finetune
+ai-workbench clone https://github.com/NVIDIA/workbench-example-hybrid-rag
+```
+
+## AI Workbench Compatibility
+
+| Component         | Supported Version                      |
+| ----------------- | -------------------------------------- |
+| OS                | Omarchy 3.1.1 (Arch-based)             |
+| GPU               | A40, A100, L40S, RTX 5090              |
+| CUDA              | 12.2+                                  |
+| Container Runtime | Docker 25.x + NVIDIA Container Toolkit |
+| Workbench         | Latest AppImage build                  |
+
+## AI Workbench Uninstall
+
+To remove everything cleanly:
+
+```bash
+aiwctl uninstall
+```
+
+Or use the standalone script:
+
+```bash
+./uninstall_ai_workbench.sh
+```
+
+## Complete Toolkit Files
+
+### Installation
+- [install.sh](install.sh) - Interactive installer for all tools
+
+### DGX Tunnel Setup
+- [setup-dgx-tunnel.sh](scripts/setup-dgx-tunnel.sh) - Main setup script (454 lines)
+- [validate.sh](scripts/validate.sh) - Quick validation suite (102 lines)
+- [test-setup.sh](scripts/test-setup.sh) - Comprehensive test script (309 lines)
+
+### AI Workbench Toolkit
+- [aiwctl](aiwctl) - Unified management CLI (107 lines)
+
+## Installation to Local Bin
+
+The DGX tunnel script is also available as a standalone command:
+
+```bash
+# Script is already installed at:
+~/.local/bin/setup-dgx-tunnel.sh
+
+# Use it from anywhere:
+setup-dgx-tunnel.sh --help
+setup-dgx-tunnel.sh --dry-run --mode user
+```
+
+## Notes
+
+- DGX Tunnel Setup is optimized for **persistent SSH tunnels** to DGX systems
+- AI Workbench Toolkit is optimized for **local GPU development** (DGX Spark, A40)
+- For remote cluster mode, configure SSH access to your target node
+- Built and tested on **Omarchy 3.1.1 kernel 6.10+** with **CUDA 12.4**
+
 ## License
 
-MIT
+MIT License © 2025 Robert A. Jackson II
+
+---
+
+> *"Build locally, scale anywhere — with Workbench as your AI lab."*
